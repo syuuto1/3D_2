@@ -4,26 +4,30 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float speed = 5; // 動く速さ
+    
 
-    private Rigidbody rb; // Rididbody
+    Rigidbody rb; // Rididbody
+    [SerializeField] float gravityModifier;//重力値調整用
+    [SerializeField] float jumpForce;//ジャンプ力
+    [SerializeField] bool isOnGround;//地面についているか
 
     void Start()
     {
-        // Rigidbody を取得
         rb = GetComponent<Rigidbody>();
+        Physics.gravity *= gravityModifier;
     }
 
     void Update()
     {
-        // カーソルキーの入力を取得
-        var moveHorizontal = Input.GetAxis("Horizontal");
-        var moveVertical = Input.GetAxis("Vertical");
-
-        // カーソルキーの入力に合わせて移動方向を設定
-        var movement = new Vector3(moveHorizontal, 0, moveVertical);
-
-        // Ridigbody に力を与えて玉を動かす
-        rb.AddForce(movement * speed);
+      if (Input.GetKeyDown(KeyCode.Space) && isOnGround) //スペースが押されて、かつ、地面にいたら
+        {
+            rb.AddForce(Vector3.up * jumpForce,ForceMode.Impulse);//上への力を加える
+            isOnGround = false;//ジャンプした＝地面にいない
+        }
+    }
+    private void OnCollisionEnter(Collision collision)//衝突が起きたら実行
+    {
+        if(collision.gameObject.CompareTag("Ground"))//ぶつかった相手(collision)のタグがGroundなら
+        isOnGround = true;//地面についている状態に変更
     }
 }
