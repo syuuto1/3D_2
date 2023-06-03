@@ -5,7 +5,8 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     
-
+    [SerializeField]ParticleSystem explosionParticle;
+    [SerializeField]ParticleSystem dirtParticle;
     Rigidbody rb; // Rididbody
     [SerializeField] float gravityModifier;//重力値調整用
     [SerializeField] float jumpForce;//ジャンプ力
@@ -18,6 +19,7 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         Physics.gravity *= gravityModifier;
         playerAnim = GetComponent<Animator>();
+        dirtParticle.Play();//最初から再生
     }
 
     void Update()
@@ -42,7 +44,8 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Game Over !!! ");//プレイ中にConsoleに表示される
             playerAnim.SetBool("Death_b",true);//ここで死亡状態bにする（Death_bとかいうのは本来自分で定義できる）
             playerAnim.SetInteger("DeathType_int",1);//integerは整数の意味死亡のタイプ？を1番目のやつにするような
-            
+            explosionParticle.Play();//再生   
+            dirtParticle.Stop();//砂埃のアニメは消す
         }
         
     }
